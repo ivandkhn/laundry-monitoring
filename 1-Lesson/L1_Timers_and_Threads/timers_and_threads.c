@@ -31,38 +31,102 @@
 
 // Contiki-specific includes:
 #include "contiki.h"
-#include "dev/leds.h"			// Enables use of LEDs
+#include "dev/leds.h"
+#include "sys/ctimer.h"
+#include "sys/etimer.h"
 
 // Standard C includes:
-#include <stdio.h>		// For printf
+#include <stdio.h>
 
+/**
+ * Define timings for different colors.
+ */
+const u_int32_t RED_BLINK_INTERVAL = CLOCK_SECOND;
+const u_int32_t BLUE_BLINK_INTERVAL = CLOCK_SECOND / 2;
+const u_int32_t RED_STOP_INTERVAL = CLOCK_SECOND * 5;
 
-PROCESS(timers_and_threads_process, "Lesson 1: Timers and Threads");
-AUTOSTART_PROCESSES(&timers_and_threads_process);
+/**
+ * Process to control blinking of red LED.
+ */
+PROCESS(red_led_process, "Control blinking of red LED");
+
+/**
+ * Process to control blinking of blue LED.
+ */
+PROCESS(blue_led_process, "Control blinking of blue LED");
+
+/**
+ * Process to terminate blinking of red LED after certain period.
+ */
+PROCESS(terminate_red_process, "Terminate blinking of blue LED");
+
+/**
+ * Launch all processes on startup.
+ */
+AUTOSTART_PROCESSES(&red_led_process, &blue_led_process, &terminate_red_process);
+
+/**
+ * Callback-based timer to blink red LED.
+ */
+static struct ctimer ct;
+
+/**
+ * Event-based timer to blink blue LED.
+ */
+static struct etimer et;
+
+/**
+ * Event-based timer to stop blinking red LED.
+ */
+static struct etimer et_term;
+
+/**
+ * Callback to toggle state of red LED.
+ */
+static void callback_function(void *data) {
+    leds_toggle(LEDS_RED);
+    ctimer_reset(&ct);
+}
 
 //------------------------ PROCESS' THREAD ------------------------
-
-// Main process:
-PROCESS_THREAD(timers_and_threads_process, ev, data) {
-
-
-	PROCESS_EXITHANDLER( printf("main_process terminated!\n"); )
-
+PROCESS_THREAD(red_led_process, ev, data) {
     PROCESS_BEGIN();
 
-	static struct timer freq_timer;
-	timer_set(&freq_timer,CLOCK_SECOND);
+    /* Map ctimer to callback function */
+    ctimer_set(&ct, RED_BLINK_INTERVAL, callback_function, NULL);
 
     while (1){
-
-    	 if(timer_expired(&freq_timer)){
-    		 /* If timer expired, toggle LED*/
-			leds_toggle(LEDS_RED);
-			/* Reset Timer */
-			timer_reset(&freq_timer);
-    	 }
+        PROCESS_WAIT_EVENT();
     }
 
     PROCESS_END();
 }
 
+PROCESS_THREAD(blue_led_process, ev, data) {
+    PROCESS_BEGIN();
+
+    etimer_set(&et, BLUE_BLINK_INTERVAL);
+
+    while(1) {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+        leds_toggle(LEDS_BLUE);
+        etimer_reset(&et);
+    }
+
+    PROCESS_END();
+}
+
+PROCESS_THREAD(terminate_red_process, ev, data) {
+    PROCESS_BEGIN();
+
+    etimer_set(&et_term, RED_STOP_INTERVAL);
+
+    while(1) {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et_term));
+        leds_off(LEDS_RED);
+        process_exit(&red_led_process);
+        ctimer_stop(&ct);
+    }
+
+    PROCESS_END();
+}

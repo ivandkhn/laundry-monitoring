@@ -35,46 +35,69 @@
 // Standard C includes:
 #include <stdio.h>    // For printf.
 
+/**
+ * Define timings for different colors.
+ */
+const u_int32_t RED_BLINK_INTERVAL = CLOCK_SECOND;
+const u_int32_t GREEN_BLINK_INTERVAL = CLOCK_SECOND / 2;
+const u_int32_t BLUE_BLINK_INTERVAL = CLOCK_SECOND / 4;
+const u_int32_t RED_STOP_INTERVAL = CLOCK_SECOND * 2;
+
+/**
+ * Timers to control corresponding colors.
+ */
+static struct etimer timerRed, timerGreen, timerBlue, timerRedTerminate;
 
 //--------------------- PROCESS CONTROL BLOCK ---------------------
-PROCESS(multithreading_proccess, "Lesson 1: Multithreading");
-AUTOSTART_PROCESSES(&multithreading_proccess);
+PROCESS(red_led_process, "Control red LED");
+PROCESS(green_led_process, "Control green LED");
+PROCESS(blue_led_process, "Control blue LED");
+PROCESS(terminate_red_process, "Terminate red LED blinking");
+AUTOSTART_PROCESSES(&red_led_process, &green_led_process,
+                    &blue_led_process, &terminate_red_process);
 
 //------------------------ PROCESS' THREAD ------------------------
-PROCESS_THREAD(multithreading_proccess, ev, data){
-
-	static struct etimer timerRed, timerGreen, timerBlue;
-
-	PROCESS_BEGIN();
-
-	printf("Timers set!\r\n ");
-	/*
-	 * Set timers
-	 */
-	etimer_set(&timerRed, CLOCK_SECOND);
-	etimer_set(&timerGreen, CLOCK_SECOND/2);
-	etimer_set(&timerBlue, CLOCK_SECOND/4);
-
-	while(1) {
-		PROCESS_WAIT_EVENT();
-		if(etimer_expired(&timerRed)) {
-			printf("Timer expired for RED...\r\n");
-			leds_toggle(LEDS_RED);
-			etimer_reset(&timerRed);
-		}
-		else if(etimer_expired(&timerGreen)) {
-			printf("Timer expired for GREEN...\r\n");
-			leds_toggle(LEDS_GREEN);
-			etimer_reset(&timerGreen);
-		}
-		else if(etimer_expired(&timerBlue)) {
-			printf("Timer expired for BLUE...\r\n");
-			leds_toggle(LEDS_BLUE);
-			etimer_reset(&timerBlue);
-		}
-	}
-	PROCESS_END();
+PROCESS_THREAD(red_led_process, ev, data) {
+    PROCESS_BEGIN();
+    etimer_set(&timerRed, RED_BLINK_INTERVAL);
+    while(1) {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&timerRed));
+        leds_toggle(LEDS_RED);
+        etimer_reset(&timerRed);
+    }
+    PROCESS_END();
 }
 
+PROCESS_THREAD(green_led_process, ev, data) {
+    PROCESS_BEGIN();
+    etimer_set(&timerGreen, GREEN_BLINK_INTERVAL);
+    while(1) {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&timerGreen));
+        leds_toggle(LEDS_GREEN);
+        etimer_reset(&timerGreen);
+    }
+    PROCESS_END();
+}
 
+PROCESS_THREAD(blue_led_process, ev, data) {
+    PROCESS_BEGIN();
+    etimer_set(&timerBlue, BLUE_BLINK_INTERVAL);
+    while(1) {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&timerBlue));
+        leds_toggle(LEDS_BLUE);
+        etimer_reset(&timerBlue);
+    }
+    PROCESS_END();
+}
 
+PROCESS_THREAD(terminate_red_process, ev, data) {
+    PROCESS_BEGIN();
+    etimer_set(&timerRedTerminate, RED_STOP_INTERVAL);
+    while(1) {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&timerRedTerminate));
+        leds_off(LEDS_RED);
+        process_exit(&red_led_process);
+        etimer_stop(&timerRed);
+    }
+    PROCESS_END();
+}

@@ -47,7 +47,11 @@ AUTOSTART_PROCESSES(&debug_process);
 PROCESS_THREAD(debug_process, ev, data){
 	PROCESS_BEGIN();
 
-	printf("\nPlatform Zolertia RE-Mote\r\n");
+	printf("\nHello World!\r\n");
+
+    for(int i=5; i<=3056; i++) {
+        printf("%d\n", i);
+    }
 
     // Main process loop:
     while(1) {
@@ -59,7 +63,8 @@ PROCESS_THREAD(debug_process, ev, data){
     	 * The Contiki kernel will service other processes while this
     	 * process is waiting.
     	 */
-    	PROCESS_WAIT_EVENT();
+        PROCESS_WAIT_EVENT();
+
     }
 
     PROCESS_END();
