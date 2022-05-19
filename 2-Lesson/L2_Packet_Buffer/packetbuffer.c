@@ -157,14 +157,19 @@ PROCESS_THREAD(packet_buffer_process, ev, data)
 
 static void copy_and_print_packetbuffer(){
 	//copy the payload of the packetbuffer to a given memory location
-	/*** YOUR CODE HERE ***/
+    void* rx_data_ptr = packetbuf_dataptr();
+    void* rx_contacts;
+    memcpy(&rx_contacts, rx_data_ptr, packetbuf_datalen());
 	//print the content of the memory location
-	/*** YOUR CODE HERE ***/
+    printf(rx_contacts);
+    printf("\n%i", length);}
+
 }
 
 static void print_packetbuffer(){
 	//retrieve the pointer to the payload and the length of it
-	/*** YOUR CODE HERE ***/
-	//use the retrieved information to print the content of the payload
-	/*** YOUR CODE HERE ***/
-}
+    void *dataPtr = packetbuf_dataptr();
+    int16_t length = packetbuf_datalen();
+    //use the retrieved information to print the content of the payload
+    printf(dataPtr);
+    printf("\n%i", length);}

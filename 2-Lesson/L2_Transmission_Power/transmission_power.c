@@ -34,13 +34,12 @@
 #include "lib/random.h"
 #include "dev/leds.h"
 #include "dev/cc2538-rf.h"
+#include "dev/serial-line.h"
 
 // Standard C includes:
 #include <stdio.h>
 #include <stdint.h>
-
-
-
+#include <stdlib.h>
 
 /*** CONNECTION DEFINITION***/
 
@@ -70,12 +69,18 @@ static struct broadcast_conn broadcastConn;
  */
 static const struct broadcast_callbacks broadcast_callbacks = {broadcast_recv};
 
+/**
+ * Global transmission power variable.
+ */
+static int tx_power = 7;
+
 /*** CONNECTION DEFINITION END ***/
 
 
 /*** MAIN PROCESS DEFINITION ***/
 PROCESS(transmission_power_process, "Lesson 2: Transmission Power");
-AUTOSTART_PROCESSES(&transmission_power_process);
+PROCESS(transmission_power_control, "Control transmission power via serial interface");
+AUTOSTART_PROCESSES(&transmission_power_process, &transmission_power_control);
 
 
 /*** MAIN THREAD ***/
@@ -89,11 +94,12 @@ PROCESS_THREAD(transmission_power_process, ev, data) {
 	/*
 	 * set your group's channel
 	 */
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 26);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
 
 	/*
 	 * Change the transmission power here
 	 */
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, tx_power);
 
 	/*
 	 * open broadcast connection
@@ -121,7 +127,7 @@ PROCESS_THREAD(transmission_power_process, ev, data) {
 		/*
 		 * for debugging
 		 */
-		printf("Broadcast message sent with power: %d\r\n",3); // or the configured Power
+		printf("Broadcast message sent with power: %d\r\n", tx_power); // or the configured Power
 
 		/*
 		 * reset the timer
@@ -132,5 +138,22 @@ PROCESS_THREAD(transmission_power_process, ev, data) {
 	}
 
 	PROCESS_END();
+}
+
+/**
+ * Parallel thread for changing the transmission power
+ * using the serial interface.
+ */
+PROCESS_THREAD(transmission_power_control, ev, data) {
+    PROCESS_BEGIN();
+    while (1) {
+        PROCESS_WAIT_EVENT();
+        if (ev == serial_line_event_message) {
+            tx_power = atoi(data);
+            NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, tx_power);
+            printf("Changed transmission power to %d dBm\n", tx_power);
+        }
+    }
+    PROCESS_END();
 }
 

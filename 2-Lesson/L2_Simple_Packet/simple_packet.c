@@ -63,7 +63,8 @@ static void broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from) {
 	leds_off(LEDS_GREEN);
 }
 
-/* Connection information
+/**
+ * Connection information
  */
 static struct broadcast_conn broadcastConn;
 
@@ -88,7 +89,7 @@ PROCESS_THREAD(simple_packet_process, ev, data) {
 	/*
 	 * set your group's channel
 	 */
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 26);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
 
 	/*
 	 * OPen broadcast connection
