@@ -37,8 +37,20 @@
 // Standard C includes:
 #include <stdio.h>      // For printf.
 
+// Creates an instance of a broadcast connection.
+static struct broadcast_conn broadcast;
 
 //------------------------ FUNCTIONS ------------------------
+/**
+* @param message - message to be broadcasted
+*/
+void forward_msg(const char * message) {
+    //send the message
+    packetbuf_copyfrom(message, 6);
+    printf("Forwarding messase %s\n", message);
+    broadcast_send(&broadcast);
+}
+
 // Defines the behavior of a connection upon receiving data.
 static void
 broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from) {
@@ -48,10 +60,11 @@ broadcast_recv(struct broadcast_conn *c, const linkaddr_t *from) {
 			(char *)packetbuf_dataptr(),
 			(int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
 	leds_off(LEDS_GREEN);
-}
 
-// Creates an instance of a broadcast connection.
-static struct broadcast_conn broadcast;
+    leds_on(LEDS_RED);
+    forward_msg((char *)packetbuf_dataptr());
+    leds_off(LEDS_RED);
+}
 
 // Defines the functions used as callbacks for a broadcast connection.
 static const struct broadcast_callbacks broadcast_call = {broadcast_recv};
@@ -110,7 +123,7 @@ PROCESS_THREAD(flooding_process, ev, data) {
 	static struct etimer et;
 
 	// Configure your team's channel (11 - 26).
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL,26);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
 
 	print_settings();
 	check_for_invalid_addr();

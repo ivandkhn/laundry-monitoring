@@ -59,7 +59,10 @@ static Buffer buffer;               // the buffer to store packets until they
                                     // are transmitted
 
 static struct unicast_conn unicast; // Creates an instance of a unicast
-                                    //connection.
+                                    // connection.
+
+static const uint8_t REVERSED = 1;  // Defines which color should be forwarded
+                                    // in another direction
 
 
 static l_table lut[TOTAL_NODES] = {
@@ -69,7 +72,7 @@ static l_table lut[TOTAL_NODES] = {
 	 * */
 	{
 		// First entry
-		.dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x01, .cost[0] = 0,
+		.dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x02, .cost[0] = 1,
 		// Second entry
 		.dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x02, .cost[1] = 1,
 		// Third entry
@@ -84,7 +87,7 @@ static l_table lut[TOTAL_NODES] = {
 	 * */
 	{
 		.dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x03, .cost[0] = 2,
-		.dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x02, .cost[1] = 0,
+		.dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x03, .cost[1] = 1,
 		.dest[2].u8[1] = 0x03, .next_hop[2].u8[1] = 0x03, .cost[2] = 1,
 	},
 
@@ -94,12 +97,33 @@ static l_table lut[TOTAL_NODES] = {
 	{
 		.dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x01, .cost[0] = 1,
 		.dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x01, .cost[1] = 2,
-		.dest[2].u8[1] = 0x03, .next_hop[2].u8[1] = 0x03, .cost[2] = 0,
+		.dest[2].u8[1] = 0x03, .next_hop[2].u8[1] = 0x01, .cost[2] = 1,
 	}
-	,
-	/*
-	 * Add here more lookup table entries if using more than three nodes.
-	 */
+};
+
+
+/**
+ * Second lookup table to perform forwarding in another direction.
+ */
+static l_table reverse_lut[TOTAL_NODES] = {
+
+        {
+            .dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x03, .cost[0] = 1,
+            .dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x03, .cost[1] = 1,
+            .dest[2].u8[1] = 0x03, .next_hop[2].u8[1] = 0x03, .cost[2] = 2,
+        },
+
+        {
+            .dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x01, .cost[0] = 2,
+            .dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x01, .cost[1] = 1,
+            .dest[2].u8[1] = 0x03, .next_hop[2].u8[1] = 0x01, .cost[2] = 1,
+        },
+
+        {
+            .dest[0].u8[1] = 0x01, .next_hop[0].u8[1] = 0x02, .cost[0] = 1,
+            .dest[1].u8[1] = 0x02, .next_hop[1].u8[1] = 0x02, .cost[1] = 2,
+            .dest[2].u8[1] = 0x03, .next_hop[2].u8[1] = 0x02, .cost[2] = 1,
+        }
 };
 
 //--------------------- PROCESS CONTROL BLOCK ---------------------
@@ -114,13 +138,22 @@ AUTOSTART_PROCESSES(&routing_process, &send_process,
 
 static void send_packet(packet_t tx_packet){
 	uint8_t i;
-	// Define next hop and forward packet
+    l_table *current_lu = lut;
+
+    // Select different lookup table if the current color is
+    // equal to the selected `RESERVED` variable.
+    if (tx_packet.message == REVERSED) {
+        current_lu = reverse_lut;
+    }
+
+	// Define next hop and forward packet according to the
+    // appropriate lookup table.
 	for(i = 0; i < TOTAL_NODES; i++)
 	{
 		if(linkaddr_cmp(&tx_packet.dest, &lut[node_id - 1].dest[i]))
 		{
 			packetbuf_copyfrom(&tx_packet, sizeof(packet_t));
-			unicast_send(&unicast, &lut[node_id - 1].next_hop[i]);
+			unicast_send(&unicast, &current_lu[node_id - 1].next_hop[i]);
 			break;
 		}
 	}
@@ -157,11 +190,10 @@ unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
 
 	packetbuf_copyto(&rx_packet);
 
-	// For Debug purposes
-	// printf("Unicast message received from 0x%x%x: '%s' [RSSI %d]\n",
-	//		 from->u8[0], from->u8[1],
-	//		(char *)packetbuf_dataptr(),
-	//		(int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
+	 printf("Unicast message received from 0x%x%x: '%s' [RSSI %d]\n",
+			 from->u8[0], from->u8[1],
+			(char *)packetbuf_dataptr(),
+			(int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
 
 	// Check if packet reached destination
 	if(linkaddr_cmp(&rx_packet.dest, &linkaddr_node_addr))
@@ -169,15 +201,16 @@ unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
 		printf("Packet reached destination \n");
 		process_post(&destination_reaced_process, PROCESS_EVENT_MSG,
 				&rx_packet.message);
-		// Your Code here
-		return;
+
+        // Even though the packet has reached its destination,
+        // we should forward it further as per task description,
+        // so early return here is removed.
+        // return;
 	}
-	else
-	{
-		tx_packet.dest.u8[0] = rx_packet.dest.u8[0];
-		tx_packet.dest.u8[1] = rx_packet.dest.u8[1];
-		tx_packet.message = rx_packet.message;
-	}
+
+    tx_packet.dest.u8[0] = rx_packet.dest.u8[0];
+    tx_packet.dest.u8[1] = rx_packet.dest.u8[1];
+    tx_packet.message = rx_packet.message;
 
 	turn_on(rx_packet.message);
 	enqueue_packet(tx_packet);
@@ -197,7 +230,7 @@ PROCESS_THREAD(routing_process, ev, data) {
 	packet_t tx_packet;
 
 	// Configure your team's channel (11 - 26).
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL,26);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
 
 	/* Configure the user button */
 	button_sensor.configure(BUTTON_SENSOR_CONFIG_TYPE_INTERVAL, CLOCK_SECOND);
