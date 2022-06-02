@@ -38,9 +38,23 @@
 #include "dev/sys-ctrl.h"
 // Standard C includes:
 #include <stdio.h>      // For printf.
+#include <stdlib.h>
 
 // Reading frequency in seconds.
 #define TEMP_READ_INTERVAL CLOCK_SECOND*1
+
+#define MAX_NAME_LENGTH 20
+#define MAX_VALUE_LENGTH 20
+#define MAX_UNIT_LENGTH 5
+typedef struct{
+    char name[MAX_NAME_LENGTH];
+    char value[MAX_VALUE_LENGTH];
+    char unit[MAX_UNIT_LENGTH];
+}sensorValue_t;
+
+static sensorValue_t sensorValue;
+
+char sendVoltage = 1;
 
 
 /*** CONNECTION DEFINITION***/
@@ -93,7 +107,7 @@ PROCESS_THREAD (on_board_sensors_process, ev, data) {
 	/*
 	 * set your group's channel
 	 */
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL,26);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
 
 	/*
 	 * open the connection
@@ -110,8 +124,24 @@ PROCESS_THREAD (on_board_sensors_process, ev, data) {
 	    if(ev == PROCESS_EVENT_TIMER) {
 
 	    	leds_on(LEDS_PURPLE);
-    		printf("\r\nMy Battery Voltage [VDD] = %d mV", vdd3_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED));
+    		printf("\r\nMy Battery Voltage [VDD] = %d mV\n", vdd3_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED));
+            printf("\r\nMy Current Temperature = %d mC\n", cc2538_temp_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED));
     		leds_off(LEDS_PURPLE);
+
+            if (sendVoltage == 1) {
+                strcpy(sensorValue.name, "Battery");
+                itoa(vdd3_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED), sensorValue.value, 10);
+                strcpy(sensorValue.unit, "mV");
+                sendVoltage = 0;
+            } else {
+                strcpy(sensorValue.name, "Temperature");
+                itoa(cc2538_temp_sensor.value(CC2538_SENSORS_VALUE_TYPE_CONVERTED), sensorValue.value, 10);
+                sendVoltage = 1;
+                strcpy(sensorValue.unit, "mC");
+            }
+
+            packetbuf_copyfrom(&sensorValue, sizeof(sensorValue));
+            broadcast_send(&broadcastConn);
 
     		etimer_set(&temp_reading_timer, TEMP_READ_INTERVAL);
 	    }

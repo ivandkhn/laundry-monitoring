@@ -38,6 +38,18 @@
 // Standard C includes:
 #include <stdio.h>			// For printf.
 
+#define MAX_NAME_LENGTH 20
+#define MAX_VALUE_LENGTH 20
+#define MAX_UNIT_LENGTH 5
+typedef struct{
+    char name[MAX_NAME_LENGTH];
+    char value[MAX_VALUE_LENGTH];
+    char unit[MAX_UNIT_LENGTH];
+}sensorValue_t;
+
+static sensorValue_t rxSensorValue;
+static sensorValue_t* sensorValuePtr;
+
 //---------------- FUNCTION PROTOTYPES ----------------
 
 // Broadcast connection setup:
@@ -66,7 +78,7 @@ PROCESS_THREAD(gateway_main_process, ev, data) {
 	/*
 	* set your group's channel
 	*/
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 26);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
 
 	print_settings();
 
@@ -107,7 +119,9 @@ static void print_buffer_contents(void){
 	rxBytes = packetbuf_copyto(&rxBuffer);
 
 	if (rxBytes>0) {
-		printf("%s\r\n\n",rxBuffer);
+        sensorValuePtr = packetbuf_dataptr();
+        memcpy(&rxSensorValue, sensorValuePtr, packetbuf_datalen());
+		printf("%s: %s %s\n",sensorValuePtr->name, sensorValuePtr->value, sensorValuePtr->unit);
 	}
 
 }
