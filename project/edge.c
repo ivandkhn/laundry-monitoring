@@ -45,7 +45,8 @@ void announceCallback() {
     txPacket.via.u8[1] = linkaddr_node_addr.u8[1];
     txPacket.operation = EDGE_ANNOUNCE;
 
-    sendUnicast("Edge sends", &txPacket, unicast, GATEWAY_ADDR);
+    sendUnicast("Edge sends", &txPacket, &unicast, GATEWAY_ADDR);
+    ctimer_reset(&edgeAnnounceTimer);
 }
 
 /**
@@ -79,7 +80,7 @@ void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
             return;
     }
 
-    sendUnicast("Edge sending", &txPacket, unicast, unicastDst);
+    sendUnicast("Edge sending", &txPacket, &unicast, unicastDst);
 }
 static const struct unicast_callbacks unicast_call = {unicast_recv};
 
@@ -93,7 +94,6 @@ PROCESS_THREAD (mainProcess, ev, data) {
 
     while (1) {
 		PROCESS_WAIT_EVENT();
-        announceCallback();
     }
 
 	PROCESS_END ();

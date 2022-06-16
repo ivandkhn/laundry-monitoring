@@ -42,6 +42,6 @@ typedef struct {
 } packet_t;
 
 void printPacket(char * prefix, packet_t packet);
-void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn u, linkaddr_t dst);
+void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn *u, linkaddr_t dst);
 
 #endif //PROJECT_PACKET_H

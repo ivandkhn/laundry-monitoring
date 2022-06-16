@@ -50,13 +50,13 @@ void printPacket(char *prefix, packet_t packet) {
             printf("\tstatus: STATUS_UNKNOWN\n");
             break;
     }
-    printf("}");
+    printf("}\n");
 }
 
-void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn u, linkaddr_t dst) {
+void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn *u, linkaddr_t dst) {
     packetbuf_copyfrom(txPacket, sizeof((*txPacket)));
     printPacket(prefix, (*txPacket));
     leds_on(LEDS_BLUE);
-    unicast_send(&u, &dst);
+    unicast_send(u, &dst);
     leds_off(LEDS_BLUE);
 }
