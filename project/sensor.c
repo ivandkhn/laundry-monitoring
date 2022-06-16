@@ -24,7 +24,7 @@
 
 #include "stdio.h"
 #include "helpers.h"
-#include "sensor.h"
+#include "packet.h"
 
 /*
  * CLion complains a lot about definitions of ZOUL_SENSORS_XXX, since
@@ -88,8 +88,7 @@ static struct unicast_conn unicast;
  * @param from Source address of the unicast message.
  */
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
-    rxPacket_t rx_packet;
-    txPacket_t tx_packet;
+    packet_t rx_packet, tx_packet;
 
     packetbuf_copyto(&rx_packet);
 
@@ -99,8 +98,9 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
            (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
 
     switch (rx_packet.operation) {
-        case QUERY_STATUS:
+        case Q_STATUS:
             tx_packet.machineStatus = getMachineStatus();
+            tx_packet.operation = A_STATUS;
             break;
         default:
             printf("Unknown query operation [%i] received!\n", rx_packet.operation);
@@ -109,15 +109,16 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
 
     packetbuf_copyfrom(&tx_packet, sizeof(tx_packet));
     leds_on(LEDS_BLUE);
-    unicast_send(&unicast, &rx_packet.src);
+    printPacket("Sending", tx_packet);
+    unicast_send(&unicast, &rx_packet.via);
     leds_off(LEDS_BLUE);
 }
 static const struct unicast_callbacks unicast_call = {unicast_recv};
 
 
-PROCESS (main, "Main");
-AUTOSTART_PROCESSES (&main);
-PROCESS_THREAD (main, ev, data) {
+PROCESS (mainProcess, "Main");
+AUTOSTART_PROCESSES (&mainProcess);
+PROCESS_THREAD (mainProcess, ev, data) {
 	PROCESS_BEGIN ();
 
     adc_zoul.configure(SENSORS_HW_INIT, ZOUL_SENSORS_ADC1 | ZOUL_SENSORS_ADC3);
