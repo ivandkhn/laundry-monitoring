@@ -14,34 +14,14 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PROJECT_PACKET_H
-#define PROJECT_PACKET_H
+#ifndef PROJECT_EDGE_H
+#define PROJECT_EDGE_H
 
-#include "core/net/linkaddr.h"
-#include "stdio.h"
+#define ANNOUNCE_TIME_THRESHOLD (CLOCK_SECOND*10)
+static struct ctimer edgeAnnounceTimer;
+static void announceCallback();
 
-typedef enum {
-    STATUS_FREE,
-    STATUS_FINISHING,
-    STATUS_BUSY,
-    STATUS_UNKNOWN
-} machineStatus_t;
+static struct unicast_conn unicast;
+static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from);
 
-typedef enum {
-    EDGE_ANNOUNCE,
-    Q_STATUS,
-    A_STATUS,
-} operation_t;
-
-typedef struct {
-    operation_t operation;
-    linkaddr_t src;
-    linkaddr_t via;
-    linkaddr_t machineAddr;
-    machineStatus_t machineStatus;
-} packet_t;
-
-void printPacket(char * prefix, packet_t packet);
-void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn u, linkaddr_t dst);
-
-#endif //PROJECT_PACKET_H
+#endif //PROJECT_EDGE_H

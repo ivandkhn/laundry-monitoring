@@ -14,6 +14,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "packetbuf.h"
+#include "dev/leds.h"
+#include "net/rime/rime.h"
 #include "packet.h"
 
 void printPacket(char *prefix, packet_t packet) {
@@ -32,7 +35,7 @@ void printPacket(char *prefix, packet_t packet) {
     }
     printf("\tsrc: 0x%x\n", packet.src.u8[1]);
     printf("\tvia: 0x%x\n", packet.via.u8[1]);
-    printf("\tmachineId: %d\n", packet.machineId);
+    printf("\tmachineAddr: 0x%x\n", packet.machineAddr.u8[1]);
     switch (packet.machineStatus) {
         case STATUS_FREE:
             printf("\tstatus: STATUS_FREE\n");
@@ -48,4 +51,12 @@ void printPacket(char *prefix, packet_t packet) {
             break;
     }
     printf("}");
+}
+
+void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn u, linkaddr_t dst) {
+    packetbuf_copyfrom(txPacket, sizeof((*txPacket)));
+    printPacket(prefix, (*txPacket));
+    leds_on(LEDS_BLUE);
+    unicast_send(&u, &dst);
+    leds_off(LEDS_BLUE);
 }
