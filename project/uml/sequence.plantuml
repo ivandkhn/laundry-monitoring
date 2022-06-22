@@ -1,0 +1,52 @@
+@startuml seq
+
+title Laundry monitoring system: sequence diagram
+footer WSN Lab – group 5, SS22
+
+hide footbox
+autonumber "<b>[00]</b>"
+skinparam shadowing false
+skinparam maxMessageSize 100
+
+participant "Gateway" as g
+participant "Edge" as e
+participant "Sensor" as s
+control "Gateway\ntimer" as gt
+control "Edge\ntimer" as et
+
+== Initial discovery ==
+e -> e: Announce timeout expired
+g <- e: ""EDGE_ANNOUNCE""
+g -> g: Add to pool
+
+== Normal operation ==
+g -> e: ""Q_STATUS""
+g -> gt ++: Start
+e -> e: Restart announce timer
+e -> s: ""Q_STATUS""
+e -> et ++: Start
+s -> s: Read sensor values
+e <- s: ""A_STATUS""
+e -> et !!: Destroy
+g <- e: ""A_STATUS""
+g -> gt !!: Destroy
+
+== Edge Failure ==
+g -> e: ""Q_STATUS""
+g -> gt ++: Start
+... no response ...
+g <- gt --: Expire
+g -> g: Remove from pool
+
+== Sensor failure ==
+g -> e: ""Q_STATUS""
+g -> gt ++: Start
+e -> s: ""Q_STATUS""
+e -> et ++: Start
+... no response ...
+e <- et --: Expire
+g <- e: ""UNKNOWN"" status
+g -> gt !!: Destroy
+
+
+@enduml
