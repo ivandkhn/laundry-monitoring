@@ -7,6 +7,13 @@
 #include "stdio.h"
 
 static const struct unicast_callbacks unicast_call = {unicast_recv};
+/**
+ * Callback for unicast reception. Here, we look at operation of the
+ * received packet and choose the appropriate action.
+ *
+ * @param c Current unicast connection.
+ * @param from Source address of the unicast message.
+ */
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
     packet_t rxPacket;
 
@@ -26,15 +33,25 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
             printf("EDGE_ANNOUNCE received, totalEdgeAddresses = %d\n", totalEdgeAddresses);
             break;
         case Q_STATUS:
+            // Gateway mode only issues Q_STATUS, but should not receive them, since
+            // they are replaced with A_STATUS by the sensor or edge.
             printf("Gateway unexpectedly received Q_STATUS\n");
         case A_STATUS:
+            // Print and parse in the UI.
             printPacket("Gateway received", rxPacket);
     }
 }
 
+/**
+ * Callback for issuing Q_STATUS messages.
+ *
+ * Gateway mote queries the status of the machines one by one,
+ * selecting the Edge mote in a Round-robin manner.
+ */
 static void pollingCallback(){
     ctimer_reset(&pollingTimer);
     if (totalEdgeAddresses == 0) {
+        // No EDGE_ANNOUNCE has been received yet.
         return;
     }
 
@@ -45,10 +62,12 @@ static void pollingCallback(){
     txPacket.src.u8[0] = 0;
     txPacket.src.u8[1] = linkaddr_node_addr.u8[1];
 
+    // Wrap currenMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
     currenMachineAddress++;
     if (currenMachineAddress > MAX_MACHINE_ADDRESSES) {
         currenMachineAddress = 1;
     }
+
     linkaddr_t machineAddr = {.u8[0] = 0, .u8[1] = currenMachineAddress};
     txPacket.machineAddr = machineAddr;
 
@@ -66,6 +85,7 @@ PROCESS_THREAD (gatewayMainProcess, ev, data) {
     ctimer_set(&pollingTimer, POLL_INTERVAL, &pollingCallback, NULL);
 
     while (1) {
+        // Waiting for either unicast_call or pollingCallback.
 		PROCESS_WAIT_EVENT();
     }
 
