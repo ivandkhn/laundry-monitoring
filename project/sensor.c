@@ -56,7 +56,7 @@ static int readSensorValue(int sensorId) {
 #pragma clang diagnostic pop
 
 #define LIGHT_SENSOR_THRESHOLD 1400
-#define VIBRATION_SENSOR_THRESHOLD 1
+#define VIBRATION_SENSOR_THRESHOLD 300
 /**
  * Read sensor values and determine machine status base on it.
  *
@@ -69,7 +69,7 @@ static machineStatus_t getMachineStatus() {
         setLedStatus(LEDS_GREEN);
         printf("Set machine status to STATUS_FREE\n");
         return STATUS_FREE;
-    } else if (adc1Value > VIBRATION_SENSOR_THRESHOLD) {
+    } else if (adc1Value < VIBRATION_SENSOR_THRESHOLD) {
         setLedStatus(LEDS_YELLOW);
         printf("Set machine status to STATUS_FINISHING\n");
         return STATUS_FINISHING;
