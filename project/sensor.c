@@ -55,7 +55,7 @@ static int readSensorValue(int sensorId) {
 }
 #pragma clang diagnostic pop
 
-#define LIGHT_SENSOR_THRESHOLD 1400
+#define LIGHT_SENSOR_THRESHOLD 1000
 #define VIBRATION_SENSOR_THRESHOLD 300
 /**
  * Read sensor values and determine machine status base on it.
@@ -88,30 +88,27 @@ static struct unicast_conn unicast;
  * @param from Source address of the unicast message.
  */
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
-    packet_t rx_packet, tx_packet;
+    packet_t tx_packet;
 
-    packetbuf_copyto(&rx_packet);
+    packetbuf_copyto(&tx_packet);
 
     printf("Unicast message received from 0x%x%x: '%s' [RSSI %d]\n",
            from->u8[0], from->u8[1],
            (char *)packetbuf_dataptr(),
            (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
 
-    switch (rx_packet.operation) {
+    switch (tx_packet.operation) {
         case Q_STATUS:
             tx_packet.machineStatus = getMachineStatus();
             tx_packet.operation = A_STATUS;
             break;
         default:
-            printf("Unknown query operation [%i] received!\n", rx_packet.operation);
+            printf("Unknown query operation [%i] received!\n", tx_packet.operation);
             return;
     }
 
-    packetbuf_copyfrom(&tx_packet, sizeof(tx_packet));
-    leds_on(LEDS_BLUE);
-    printPacket("Sending", tx_packet);
-    unicast_send(&unicast, &rx_packet.via);
-    leds_off(LEDS_BLUE);
+    sendUnicast("Sensor sends", &tx_packet, &unicast, tx_packet.via);
+
 }
 static const struct unicast_callbacks unicast_call = {unicast_recv};
 
@@ -119,15 +116,18 @@ static const struct unicast_callbacks unicast_call = {unicast_recv};
 PROCESS (mainProcess, "Main");
 AUTOSTART_PROCESSES (&mainProcess);
 PROCESS_THREAD (mainProcess, ev, data) {
-	PROCESS_BEGIN ();
+    PROCESS_BEGIN ();
 
     adc_zoul.configure(SENSORS_HW_INIT, ZOUL_SENSORS_ADC1 | ZOUL_SENSORS_ADC3);
 	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, 5);
     unicast_open(&unicast, 129, &unicast_call);
+
+    getMachineStatus();
 
     while (1) {
 		PROCESS_WAIT_EVENT();
-        // for now any event (e.g. keyboard input) will trigger status update
+        // For testing, any event (e.g. keyboard input) will trigger status update.
         getMachineStatus();
     }
 	PROCESS_END ();
