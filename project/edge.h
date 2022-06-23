@@ -17,7 +17,7 @@
 #ifndef PROJECT_EDGE_H
 #define PROJECT_EDGE_H
 
-#define ANNOUNCE_TIME_THRESHOLD (CLOCK_SECOND*10)
+#define ANNOUNCE_TIME_THRESHOLD (CLOCK_SECOND*5)
 static struct ctimer edgeAnnounceTimer;
 static void announceCallback();
 

@@ -29,7 +29,7 @@
 #include "edge.h"
 
 // TODO: check it's equal to gateway node id
-const linkaddr_t GATEWAY_ADDR = {.u8[0] = 1, .u8[1] = 1};
+const linkaddr_t GATEWAY_ADDR = {.u8[0] = 0, .u8[1] = 9};
 
 /**
  * Callback function for issuing EDGE_ANNOUNCE messages.
@@ -69,8 +69,9 @@ void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
     linkaddr_t unicastDst;
     switch (rxPacket.operation) {
         case Q_STATUS:
+            // todo: also create a timer to check if sensor node did not respond and thus send STATUS_UNKNOWN to GW
             unicastDst = rxPacket.machineAddr;
-            ctimer_reset(&edgeAnnounceTimer);
+            ctimer_restart(&edgeAnnounceTimer);
             break;
         case A_STATUS:
             unicastDst = rxPacket.src;
@@ -89,6 +90,8 @@ AUTOSTART_PROCESSES (&mainProcess);
 PROCESS_THREAD (mainProcess, ev, data) {
 	PROCESS_BEGIN ();
 
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, 5);
     unicast_open(&unicast, 129, &unicast_call);
     ctimer_set(&edgeAnnounceTimer, ANNOUNCE_TIME_THRESHOLD, &announceCallback, NULL);
 
