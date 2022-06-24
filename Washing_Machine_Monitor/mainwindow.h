@@ -2,6 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
+#include <QtGui>
+#include <QtCore>
+#include "qextserialport.h"
+#include "qextserialenumerator.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,9 +22,13 @@ public:
 
 private slots:
     void on_pushButton_clicked();
+    void receive();
+
 
 private:
     Ui::MainWindow *ui;
+    QextSerialPort port;
+    QMessageBox error;
 };
 
 #endif // MAINWINDOW_H

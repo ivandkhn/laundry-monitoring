@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/img">
         <file>template.png</file>
+        <file>washing-machine-svgrepo-com.svg</file>
     </qresource>
 </RCC>
