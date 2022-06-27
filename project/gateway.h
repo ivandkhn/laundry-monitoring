@@ -26,6 +26,6 @@ static linkaddr_t edge_addresses[MAX_EDGE_ADDRESSES];
 static uint8_t totalEdgeAddresses = 0, currentEdgeAddressIdx = 0;
 
 #define MAX_MACHINE_ADDRESSES 6
-static uint8_t currenMachineAddress = 0;
+static uint8_t currentMachineAddress = 0;
 
 #endif //PROJECT_GATEWAY_H

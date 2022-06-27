@@ -62,13 +62,13 @@ static void pollingCallback(){
     txPacket.src.u8[0] = 0;
     txPacket.src.u8[1] = linkaddr_node_addr.u8[1];
 
-    // Wrap currenMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
-    currenMachineAddress++;
-    if (currenMachineAddress > MAX_MACHINE_ADDRESSES) {
-        currenMachineAddress = 1;
+    // Wrap currentMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
+    currentMachineAddress++;
+    if (currentMachineAddress > MAX_MACHINE_ADDRESSES) {
+        currentMachineAddress = 1;
     }
 
-    linkaddr_t machineAddr = {.u8[0] = 0, .u8[1] = currenMachineAddress};
+    linkaddr_t machineAddr = {.u8[0] = 0, .u8[1] = currentMachineAddress};
     txPacket.machineAddr = machineAddr;
 
     sendUnicast("Gateway sends", &txPacket, &unicast, viaAddr);
