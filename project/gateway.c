@@ -1,6 +1,18 @@
-//
-// Created by Ivan Dakhnenko on 23.06.22.
-//
+/*
+    Copyright (c) 2022 Group 5, SDN Lab
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 2.0 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "gateway.h"
 #include "packet.h"
@@ -62,13 +74,13 @@ static void pollingCallback(){
     txPacket.src.u8[0] = 0;
     txPacket.src.u8[1] = linkaddr_node_addr.u8[1];
 
-    // Wrap currenMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
-    currenMachineAddress++;
-    if (currenMachineAddress > MAX_MACHINE_ADDRESSES) {
-        currenMachineAddress = 1;
+    // Wrap currentMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
+    currentMachineAddress++;
+    if (currentMachineAddress > MAX_MACHINE_ADDRESSES) {
+        currentMachineAddress = 1;
     }
 
-    linkaddr_t machineAddr = {.u8[0] = 0, .u8[1] = currenMachineAddress};
+    linkaddr_t machineAddr = {.u8[0] = 0, .u8[1] = currentMachineAddress};
     txPacket.machineAddr = machineAddr;
 
     sendUnicast("Gateway sends", &txPacket, &unicast, viaAddr);
