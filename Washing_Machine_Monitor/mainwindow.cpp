@@ -9,20 +9,23 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     QPixmap pix(":/img/washing-machine-svgrepo-com.svg");
+    QPixmap pix2(":/img/tum-logo.png");
     int w = ui->machine1->width();
     int h =ui->machine1->height();
+    int w1 = ui->tum_logo->width();
+    int h1 =ui->tum_logo->height();
     ui->machine1->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
     ui->machine2->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
     ui->machine3->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
     ui->machine4->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
     ui->machine5->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
     ui->machine6->setPixmap(pix.scaled(w,h,Qt::KeepAspectRatio));
-
+    ui->tum_logo->setPixmap(pix2.scaled(w1,h1,Qt::KeepAspectRatio));
     // Get all available COM Ports and store them in a QList.
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
 
     port.setQueryMode(QextSerialPort::EventDriven);
-    port.setPortName("/dev/ttyUSB1");
+    port.setPortName("/dev/ttyUSB0");
     port.setBaudRate(BAUD115200);
     port.setFlowControl(FLOW_OFF);
     port.setParity(PAR_NONE);
@@ -91,6 +94,13 @@ void MainWindow::receive()
 
          else if (str.contains("STATUS_FINISHING")){
              status.append(" is FINISHING");
+         }
+
+         else if (str.contains("STATUS_BUSY")){
+             status.append(" is BUSY");
+         }
+         else {
+             status.append(" is MALFUNCTIONING");
          }
 
         if (machine_number == '1'){
