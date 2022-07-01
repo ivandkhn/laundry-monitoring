@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    int testFlag = 100;
 
 private slots:
     void on_pushButton_clicked();
@@ -29,6 +30,9 @@ private:
     Ui::MainWindow *ui;
     QextSerialPort port;
     QMessageBox error;
+
+protected:
+    void paintEvent(QPaintEvent *e);
 };
 
 #endif // MAINWINDOW_H
