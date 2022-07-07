@@ -206,9 +206,6 @@ void MainWindow::receive()
          else if (str.contains("STATUS_BUSY")){
              status.append(" is BUSY");
          }
-         else {
-             status.append(" is MALFUNCTIONING");
-         }
 
         if (machine_number == '1'){
             if (str.contains("STATUS_FREE")){
@@ -221,7 +218,7 @@ void MainWindow::receive()
                 ui->machine1->setStyleSheet("QLabel { background-color : yellow;}");
             }
             else if (str.contains("STATUS_UNKNOWN")){
-                ui->textEdit_malfunc->append("Washer 1 is malfunctioning");
+                ui->machine1->setStyleSheet("QLabel { background-color : grey;}");
             }
         }
 
@@ -236,7 +233,7 @@ void MainWindow::receive()
                 ui->machine2->setStyleSheet("QLabel { background-color : yellow;}");
             }
             else if (str.contains("STATUS_UNKNOWN")){
-                ui->textEdit_malfunc->append("Washer 2 is malfunctioning");
+                ui->machine2->setStyleSheet("QLabel { background-color : grey;}");
             }
         }
 
@@ -251,7 +248,7 @@ void MainWindow::receive()
                 ui->machine3->setStyleSheet("QLabel { background-color : yellow;}");
             }
             else if (str.contains("STATUS_UNKNOWN")){
-                ui->textEdit_malfunc->append("Washer 3 is malfunctioning");
+                ui->machine3->setStyleSheet("QLabel { background-color : grey;}");
             }
         }
 
@@ -266,7 +263,7 @@ void MainWindow::receive()
                 ui->machine4->setStyleSheet("QLabel { background-color : yellow;}");
             }
             else if (str.contains("STATUS_UNKNOWN")){
-                ui->textEdit_malfunc->append("Dryer 1 is malfunctioning");
+                ui->machine4->setStyleSheet("QLabel { background-color : grey;}");
             }
         }
 
@@ -281,7 +278,7 @@ void MainWindow::receive()
                 ui->machine5->setStyleSheet("QLabel { background-color : yellow;}");
             }
             else if (str.contains("STATUS_UNKNOWN")){
-                ui->textEdit_malfunc->append("Dryer 2 is malfunctioning");
+                ui->machine5->setStyleSheet("QLabel { background-color : grey;}");
             }
         }
 
@@ -296,11 +293,15 @@ void MainWindow::receive()
                 ui->machine6->setStyleSheet("QLabel { background-color : yellow;}");
             }
             else if (str.contains("STATUS_UNKNOWN")){
-                ui->textEdit_malfunc->append("Dryer 3 is malfunctioning");
+                ui->machine6->setStyleSheet("QLabel { background-color : grey;}");
             }
         }
 
-         ui->textEdit_2->append(status);
+        if (!str.contains("STATUS_UNKNOWN")){
+
+            ui->textEdit_malfunc->append(status);
+        }
+
          this->repaint();
          status.clear();
          str.clear();
@@ -361,7 +362,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 2){
@@ -386,7 +386,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 3){
@@ -411,7 +410,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 4){
@@ -436,7 +434,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 5){
@@ -461,7 +458,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 6){
@@ -486,7 +482,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 7){
@@ -511,7 +506,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 8){
@@ -536,7 +530,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
+
     }
 
     else if (testFlag == 9){
@@ -561,7 +555,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 10){
@@ -586,7 +579,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     else if (testFlag == 11){
@@ -611,7 +603,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
         painter.drawPoint(p2);
-        //this->repaint();
     }
 
     //answers from sensor to gateway
