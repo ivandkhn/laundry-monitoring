@@ -38,6 +38,9 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
 
     switch (rxPacket.operation) {
         case EDGE_ANNOUNCE:
+            if (totalEdgeAddresses == MAX_EDGE_ADDRESSES) {
+                break;
+            }
             totalEdgeAddresses++;
             edge_addresses[totalEdgeAddresses-1] = rxPacket.via;
             currentEdgeAddressIdx = totalEdgeAddresses-1;
@@ -73,6 +76,11 @@ static void pollingCallback(){
     txPacket.via = viaAddr;
     txPacket.src.u8[0] = 0;
     txPacket.src.u8[1] = linkaddr_node_addr.u8[1];
+
+    currentEdgeAddressIdx++;
+    if (currentEdgeAddressIdx >= totalEdgeAddresses) {
+        currentEdgeAddressIdx = 0;
+    }
 
     // Wrap currentMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
     currentMachineAddress++;

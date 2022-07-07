@@ -33,9 +33,9 @@ void printPacket(char *prefix, packet_t packet) {
             printf("\toperation: A_STATUS\n");
             break;
     }
-    printf("\tsrc: 0x%x\n", packet.src.u8[1]);
-    printf("\tvia: 0x%x\n", packet.via.u8[1]);
-    printf("\tmachineAddr: 0x%x\n", packet.machineAddr.u8[1]);
+    printf("\tsrc: 0x%x%x\n", packet.src.u8[0], packet.src.u8[1]);
+    printf("\tvia: 0x%x%x\n", packet.via.u8[0], packet.via.u8[1]);
+    printf("\tmachineAddr: 0x%x%x\n", packet.machineAddr.u8[0], packet.machineAddr.u8[1]);
     switch (packet.machineStatus) {
         case STATUS_FREE:
             printf("\tstatus: STATUS_FREE\n");
@@ -57,10 +57,6 @@ void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn *u, linka
     packetbuf_copyfrom(txPacket, sizeof((*txPacket)));
     printPacket(prefix, (*txPacket));
     leds_on(LEDS_BLUE);
-
-    rtimer_clock_t end = RTIMER_NOW() + RTIMER_SECOND / 20;
-    while(RTIMER_CLOCK_LT(RTIMER_NOW(), end)) { /* pause */}
     unicast_send(u, &dst);
-
     leds_off(LEDS_BLUE);
 }

@@ -17,9 +17,14 @@
 #ifndef PROJECT_EDGE_H
 #define PROJECT_EDGE_H
 
-#define ANNOUNCE_TIME_THRESHOLD (CLOCK_SECOND*5)
+#define ANNOUNCE_TIME_THRESHOLD (CLOCK_SECOND*15)
 static struct ctimer edgeAnnounceTimer;
 static void announceCallback();
+
+#define ANSWER_TIME_THRESHOLD (CLOCK_SECOND*4)
+static struct ctimer answerExpectedTimer;
+static void answerNotReceivedCallback();
+static linkaddr_t currentAddress;
 
 static struct unicast_conn unicast;
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from);

@@ -123,13 +123,10 @@ PROCESS_THREAD (mainProcess, ev, data) {
     NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, 5);
     unicast_open(&unicast, 129, &unicast_call);
 
-    getMachineStatus();
-
     while (1) {
 		PROCESS_WAIT_EVENT();
-        // For testing, any event (e.g. keyboard input) will trigger status update.
-        getMachineStatus();
     }
+
 	PROCESS_END ();
 }
 

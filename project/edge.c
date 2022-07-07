@@ -46,7 +46,20 @@ void announceCallback() {
     txPacket.operation = EDGE_ANNOUNCE;
 
     sendUnicast("Edge sends", &txPacket, &unicast, GATEWAY_ADDR);
-    ctimer_reset(&edgeAnnounceTimer);
+    ctimer_restart(&edgeAnnounceTimer);
+}
+
+void answerNotReceivedCallback() {
+    packet_t txPacket;
+
+    txPacket.via.u8[0] = 0;
+    txPacket.via.u8[1] = linkaddr_node_addr.u8[1];
+    txPacket.src = GATEWAY_ADDR;
+    txPacket.operation = A_STATUS;
+    txPacket.machineStatus = STATUS_UNKNOWN;
+    txPacket.machineAddr = currentAddress;
+
+    sendUnicast("Edge sends", &txPacket, &unicast, GATEWAY_ADDR);
 }
 
 /**
@@ -56,25 +69,26 @@ void announceCallback() {
  * @param from Source address of the unicast message.
  */
 void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
-    packet_t rxPacket, txPacket;
+    packet_t txPacket;
 
-    packetbuf_copyto(&rxPacket);
+    packetbuf_copyto(&txPacket);
 
     printf("Unicast message received from 0x%x%x: '%s' [RSSI %d]\n",
            from->u8[0], from->u8[1],
            (char *)packetbuf_dataptr(),
            (int16_t)packetbuf_attr(PACKETBUF_ATTR_RSSI));
 
-    txPacket = rxPacket;
     linkaddr_t unicastDst;
-    switch (rxPacket.operation) {
+    switch (txPacket.operation) {
         case Q_STATUS:
-            // todo: also create a timer to check if sensor node did not respond and thus send STATUS_UNKNOWN to GW
-            unicastDst = rxPacket.machineAddr;
+            unicastDst = txPacket.machineAddr;
             ctimer_restart(&edgeAnnounceTimer);
+            ctimer_set(&answerExpectedTimer, ANSWER_TIME_THRESHOLD, &answerNotReceivedCallback, NULL);
+            currentAddress = txPacket.machineAddr;
             break;
         case A_STATUS:
-            unicastDst = rxPacket.src;
+            unicastDst = txPacket.src;
+            ctimer_stop(&answerExpectedTimer);
             break;
         case EDGE_ANNOUNCE:
             printf("Edge mode unexpectedly received EDGE_ANNOUNCE!\n");
