@@ -21,6 +21,7 @@
 #include "net/netstack.h"
 #include "net/rime/rime.h"
 #include "etimer.h"
+#include "project-conf.h"
 
 #include "stdio.h"
 #include "helpers.h"
@@ -119,8 +120,8 @@ PROCESS_THREAD (mainProcess, ev, data) {
     PROCESS_BEGIN ();
 
     adc_zoul.configure(SENSORS_HW_INIT, ZOUL_SENSORS_ADC1 | ZOUL_SENSORS_ADC3);
-	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
-    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, 5);
+	NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, TX_CHANNEL);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, TX_POWER);
     unicast_open(&unicast, 129, &unicast_call);
 
     while (1) {

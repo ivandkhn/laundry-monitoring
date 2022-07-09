@@ -22,6 +22,7 @@
 #include "net/rime/rime.h"
 #include "etimer.h"
 #include "ctimer.h"
+#include "project-conf.h"
 
 #include "stdio.h"
 #include "helpers.h"
@@ -104,8 +105,8 @@ AUTOSTART_PROCESSES (&mainProcess);
 PROCESS_THREAD (mainProcess, ev, data) {
 	PROCESS_BEGIN ();
 
-    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
-    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, 5);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, TX_CHANNEL);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, TX_POWER);
     unicast_open(&unicast, 129, &unicast_call);
     ctimer_set(&edgeAnnounceTimer, ANNOUNCE_TIME_THRESHOLD, &announceCallback, NULL);
 

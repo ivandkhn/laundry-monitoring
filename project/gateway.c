@@ -17,6 +17,7 @@
 #include "gateway.h"
 #include "packet.h"
 #include "stdio.h"
+#include "project-conf.h"
 
 static const struct unicast_callbacks unicast_call = {unicast_recv};
 /**
@@ -99,8 +100,8 @@ AUTOSTART_PROCESSES (&gatewayMainProcess);
 PROCESS_THREAD (gatewayMainProcess, ev, data) {
 	PROCESS_BEGIN ();
 
-    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, 15);
-    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, 5);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_CHANNEL, TX_CHANNEL);
+    NETSTACK_CONF_RADIO.set_value(RADIO_PARAM_TXPOWER, TX_POWER);
     unicast_open(&unicast, 129, &unicast_call);
     ctimer_set(&pollingTimer, POLL_INTERVAL, &pollingCallback, NULL);
 
