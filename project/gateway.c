@@ -19,7 +19,7 @@
 #include "stdio.h"
 #include "project-conf.h"
 
-static const struct unicast_callbacks unicast_call = {unicast_recv};
+static const struct unicast_callbacks unicast_call = {unicast_recv, unicast_sent};
 /**
  * Callback for unicast reception. Here, we look at operation of the
  * received packet and choose the appropriate action.
@@ -39,14 +39,7 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
 
     switch (rxPacket.operation) {
         case EDGE_ANNOUNCE:
-            if (totalEdgeAddresses == MAX_EDGE_ADDRESSES) {
-                break;
-            }
-            totalEdgeAddresses++;
-            edge_addresses[totalEdgeAddresses-1] = rxPacket.via;
-            currentEdgeAddressIdx = totalEdgeAddresses-1;
-            // TODO: check stability in case of multiple EDGE_ANNOUNCES from the same edge
-            printf("EDGE_ANNOUNCE received, totalEdgeAddresses = %d\n", totalEdgeAddresses);
+            poolAdd(&edgePool,rxPacket.via);
             break;
         case Q_STATUS:
             // Gateway mode only issues Q_STATUS, but should not receive them, since
@@ -58,6 +51,14 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
     }
 }
 
+static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx) {
+    const linkaddr_t* addr = packetbuf_addr(PACKETBUF_ADDR_RECEIVER);
+    printf("Send done to %d.%d: status %d, num_tx %i\n", addr->u8[0], addr->u8[1], status, num_tx);
+    if (status != 0) {
+        poolRemove(&edgePool, *addr);
+    }
+}
+
 /**
  * Callback for issuing Q_STATUS messages.
  *
@@ -66,22 +67,17 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
  */
 static void pollingCallback(){
     ctimer_reset(&pollingTimer);
-    if (totalEdgeAddresses == 0) {
+    if (edgePool.validAddresses == 0) {
         // No EDGE_ANNOUNCE has been received yet.
         return;
     }
 
     packet_t txPacket;
     txPacket.operation = Q_STATUS;
-    linkaddr_t viaAddr = edge_addresses[currentEdgeAddressIdx];
+    linkaddr_t viaAddr = poolGet(&edgePool);
     txPacket.via = viaAddr;
     txPacket.src.u8[0] = 0;
     txPacket.src.u8[1] = linkaddr_node_addr.u8[1];
-
-    currentEdgeAddressIdx++;
-    if (currentEdgeAddressIdx >= totalEdgeAddresses) {
-        currentEdgeAddressIdx = 0;
-    }
 
     // Wrap currentMachineAddress at MAX_MACHINE_ADDRESSES back to 1.
     currentMachineAddress++;
