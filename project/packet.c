@@ -57,6 +57,8 @@ void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn *u, linka
     packetbuf_copyfrom(txPacket, sizeof((*txPacket)));
     printPacket(prefix, (*txPacket));
     leds_on(LEDS_BLUE);
+    rtimer_clock_t end = RTIMER_NOW() + RTIMER_SECOND / 20;
+    while(RTIMER_CLOCK_LT(RTIMER_NOW(), end)) { /* pause */}
     unicast_send(u, &dst);
     leds_off(LEDS_BLUE);
 }
