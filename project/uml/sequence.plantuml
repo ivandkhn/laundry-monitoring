@@ -20,13 +20,13 @@ g -> g: Add to pool
 
 == Normal operation ==
 g -> e: ""Q_STATUS""
+g <- c: """sent: status 0""
 e -> e: Restart announce timer
 e -> s: ""Q_STATUS""
+e <- c: ""sent: status 0""
 s -> s: Read sensor\nvalues
 e <- s: ""A_STATUS""
-e <- c: ""sent: status 0""
 g <- e: ""A_STATUS""
-g <- c: """sent: status 0""
 g -> g: Update UI
 
 == Edge Failure ==
