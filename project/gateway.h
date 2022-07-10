@@ -31,7 +31,7 @@ static struct unicast_conn unicast;
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from);
 static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx);
 
-#define POLL_INTERVAL (CLOCK_SECOND*2)
+#define POLL_INTERVAL (CLOCK_SECOND*1)
 static struct ctimer pollingTimer;
 static void pollingCallback();
 
