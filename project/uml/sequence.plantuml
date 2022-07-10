@@ -37,6 +37,7 @@ g -> g: Remove from pool
 
 == Sensor failure ==
 g -> e: ""Q_STATUS""
+g <- c: ""sent: status 0""
 e -> s: ""Q_STATUS""
 ... no response ...
 e <- c: ""sent: status !0""
