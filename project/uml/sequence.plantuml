@@ -6,13 +6,12 @@ footer WSN Lab – group 5, SS22
 hide footbox
 autonumber "<b>[00]</b>"
 skinparam shadowing false
-skinparam maxMessageSize 100
+skinparam maxMessageSize 120
 
 participant "Gateway" as g
 participant "Edge" as e
 participant "Sensor" as s
-control "Gateway\ntimer" as gt
-control "Edge\ntimer" as et
+entity "Contiki OS" as c
 
 == Initial discovery ==
 e -> e: Announce timeout expired
@@ -21,32 +20,26 @@ g -> g: Add to pool
 
 == Normal operation ==
 g -> e: ""Q_STATUS""
-g -> gt ++: Start
 e -> e: Restart announce timer
 e -> s: ""Q_STATUS""
-e -> et ++: Start
-s -> s: Read sensor values
+s -> s: Read sensor\nvalues
 e <- s: ""A_STATUS""
-e -> et !!: Destroy
+e <- c: ""sent: status 0""
 g <- e: ""A_STATUS""
-g -> gt !!: Destroy
+g <- c: """sent: status 0""
+g -> g: Update UI
 
 == Edge Failure ==
 g -> e: ""Q_STATUS""
-g -> gt ++: Start
 ... no response ...
-g <- gt --: Expire
+g <- c: ""sent: status !0""
 g -> g: Remove from pool
 
 == Sensor failure ==
 g -> e: ""Q_STATUS""
-g -> gt ++: Start
 e -> s: ""Q_STATUS""
-e -> et ++: Start
 ... no response ...
-e <- et --: Expire
+e <- c: ""sent: status !0""
 g <- e: ""UNKNOWN"" status
-g -> gt !!: Destroy
-
 
 @enduml
