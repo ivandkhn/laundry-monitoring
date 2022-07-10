@@ -50,19 +50,6 @@ void announceCallback() {
     ctimer_restart(&edgeAnnounceTimer);
 }
 
-void answerNotReceivedCallback() {
-    packet_t txPacket;
-
-    txPacket.via.u8[0] = 0;
-    txPacket.via.u8[1] = linkaddr_node_addr.u8[1];
-    txPacket.src = GATEWAY_ADDR;
-    txPacket.operation = A_STATUS;
-    txPacket.machineStatus = STATUS_UNKNOWN;
-    txPacket.machineAddr = currentAddress;
-
-    sendUnicast("Edge sends", &txPacket, &unicast, GATEWAY_ADDR);
-}
-
 /**
  * Callback for unicast reception.
  *
@@ -84,12 +71,9 @@ void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
         case Q_STATUS:
             unicastDst = txPacket.machineAddr;
             ctimer_restart(&edgeAnnounceTimer);
-            ctimer_set(&answerExpectedTimer, ANSWER_TIME_THRESHOLD, &answerNotReceivedCallback, NULL);
-            currentAddress = txPacket.machineAddr;
             break;
         case A_STATUS:
             unicastDst = txPacket.src;
-            ctimer_stop(&answerExpectedTimer);
             break;
         case EDGE_ANNOUNCE:
             printf("Edge mode unexpectedly received EDGE_ANNOUNCE!\n");
@@ -98,7 +82,34 @@ void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
 
     sendUnicast("Edge sending", &txPacket, &unicast, unicastDst);
 }
-static const struct unicast_callbacks unicast_call = {unicast_recv};
+
+/**
+ * Callback execute after unicast transmission, thr latter being
+ * possibly unsuccessful.
+ *
+ * @param ptr Current unicast connection.
+ * @param status Result code of transmission – non-zero code means
+ * the message was NOT successfully transmitted.
+ * @param num_tx Number of executed re-transmissions.
+ */
+static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx) {
+    const linkaddr_t* addr = packetbuf_addr(PACKETBUF_ADDR_RECEIVER);
+    printf("Send done to %d.%d: status %d, num_tx %i\n", addr->u8[0], addr->u8[1], status, num_tx);
+    if (status != 0) {
+        packet_t txPacket;
+
+        txPacket.via.u8[0] = 0;
+        txPacket.via.u8[1] = linkaddr_node_addr.u8[1];
+        txPacket.src = GATEWAY_ADDR;
+        txPacket.operation = A_STATUS;
+        txPacket.machineStatus = STATUS_UNKNOWN;
+        txPacket.machineAddr = *addr;
+
+        sendUnicast("Edge sends", &txPacket, &unicast, GATEWAY_ADDR);
+    }
+}
+
+static const struct unicast_callbacks unicast_call = {unicast_recv, unicast_sent};
 
 PROCESS (mainProcess, "Main");
 AUTOSTART_PROCESSES (&mainProcess);
