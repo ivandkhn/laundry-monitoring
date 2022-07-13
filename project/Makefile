@@ -1,7 +1,7 @@
 CONTIKI_PROJECT = sensor
 all: $(CONTIKI_PROJECT)
 
-PROJECT_SOURCEFILES += helpers.c packet.c edgepool.c
+PROJECT_SOURCEFILES += helpers.c packet.c addresspool.c
 
 CONTIKI = $(HOME)/contiki
 CONTIKI_WITH_RIME = 1

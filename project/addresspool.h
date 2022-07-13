@@ -14,10 +14,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PROJECT_EDGEPOOL_H
-#define PROJECT_EDGEPOOL_H
+#ifndef PROJECT_ADDRESSPOOL_H
+#define PROJECT_ADDRESSPOOL_H
 
-#include "edgepool.h"
+#include "addresspool.h"
 #include "linkaddr.h"
 
 #define MAX_EDGE_ADDRESSES 2
@@ -25,10 +25,10 @@ typedef struct {
     linkaddr_t addresses[MAX_EDGE_ADDRESSES];
     uint8_t validAddresses;
     uint8_t currentAddress;
-} edgePool_t;
+} addresspool_t;
 
-void poolAdd(edgePool_t *pool, linkaddr_t addr);
-void poolRemove(edgePool_t *pool, linkaddr_t addr);
-linkaddr_t poolGet(edgePool_t *pool);
+void poolAdd(addresspool_t *pool, linkaddr_t addr);
+void poolRemove(addresspool_t *pool, linkaddr_t addr);
+linkaddr_t poolGet(addresspool_t *pool);
 
-#endif //PROJECT_EDGEPOOL_H
+#endif //PROJECT_ADDRESSPOOL_H

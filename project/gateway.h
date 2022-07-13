@@ -25,7 +25,7 @@
 #include "net/rime/rime.h"
 #include "etimer.h"
 #include "ctimer.h"
-#include "edgepool.h"
+#include "addresspool.h"
 
 static struct unicast_conn unicast;
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from);
@@ -35,7 +35,7 @@ static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx);
 static struct ctimer pollingTimer;
 static void pollingCallback();
 
-static edgePool_t edgePool = {.currentAddress = 0, .validAddresses = 0};
+static addresspool_t edgePool = {.currentAddress = 0, .validAddresses = 0};
 
 #define MAX_MACHINE_ADDRESSES 6
 static uint8_t currentMachineAddress = 0;

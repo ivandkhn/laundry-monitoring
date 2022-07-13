@@ -14,17 +14,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "edgepool.h"
+#include "addresspool.h"
 #include "stdio.h"
 
 /**
  * Try to add an address to the pool. Nothing happens if the address
  * already exists,
  *
- * @param pool A pointer to the edgePool structure.
+ * @param pool A pointer to the addresspool structure.
  * @param addr New address to add.
  */
-void poolAdd(edgePool_t *pool, linkaddr_t addr) {
+void poolAdd(addresspool_t *pool, linkaddr_t addr) {
     printf("poolAdd for addr %d.%d\n", addr.u8[0], addr.u8[1]);
     for (int i = 0; i < pool->validAddresses; ++i) {
         if (linkaddr_cmp(&pool->addresses[i], &addr) != 0) {
@@ -42,11 +42,11 @@ void poolAdd(edgePool_t *pool, linkaddr_t addr) {
 /**
  * Remove the address from the pool.
  *
- * @param pool A pointer to the edgePool structure.
+ * @param pool A pointer to the addresspool structure.
  * @param addr An address for deletion. Note that this address is assumed
  * to be present in a pool.
  */
-void poolRemove(edgePool_t *pool, linkaddr_t addr) {
+void poolRemove(addresspool_t *pool, linkaddr_t addr) {
     printf("poolRemove for addr %d.%d\n", addr.u8[0], addr.u8[1]);
     uint8_t idx = 0;
     while (linkaddr_cmp(&pool->addresses[idx], &addr) == 0) {
@@ -65,10 +65,10 @@ void poolRemove(edgePool_t *pool, linkaddr_t addr) {
  * Get a new address from the pool of valid addresses
  * and cycle the internal index.
  *
- * @param pool A pointer to the edgePool structure.
- * @return Valid edge address.
+ * @param pool A pointer to the addresspool structure.
+ * @return Valid mote address.
  */
-linkaddr_t poolGet(edgePool_t *pool) {
+linkaddr_t poolGet(addresspool_t *pool) {
     linkaddr_t addr = pool->addresses[pool->currentAddress];
     printf("poolGet: currentAddressIdx=%d, address = %d.%d\n",
            pool->currentAddress, addr.u8[0], addr.u8[1]);

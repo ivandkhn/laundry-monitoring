@@ -23,6 +23,6 @@ static void announceCallback();
 
 static struct unicast_conn unicast;
 static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from);
-static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx)
+static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx);
 
 #endif //PROJECT_EDGE_H
