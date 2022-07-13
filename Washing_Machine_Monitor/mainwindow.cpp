@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->sensor_node_4->setPixmap(pix3.scaled(w2,h2,Qt::KeepAspectRatio));
     ui->sensor_node_5->setPixmap(pix3.scaled(w2,h2,Qt::KeepAspectRatio));
     ui->sensor_node_6->setPixmap(pix3.scaled(w2,h2,Qt::KeepAspectRatio));
+    update();
     // Get all available COM Ports and store them in a QList.
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
 
@@ -311,6 +312,43 @@ void MainWindow::receive()
 void MainWindow::paintEvent(QPaintEvent *e){
 //green is the starting point and yellow the ending point
     QPainter painter(this);
+    //painting the whole topology
+    int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
+    int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
+    int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
+    int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
+    int x3 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
+    int y3 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
+    int x4 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
+    int y4 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
+    int x5 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
+    int y5 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
+    int x6 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
+    int y6 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
+    int x7 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
+    int y7 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
+    int x8 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
+    int y8 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
+    int x9 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
+    int y9 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
+    QPen linepen(Qt::black);
+    linepen.setWidth(4);
+    painter.drawLine(x1,y1,x2,y2);
+    painter.drawLine(x2,y2,x4,y4);
+    painter.drawLine(x2,y2,x5,y5);
+    painter.drawLine(x2,y2,x6,y6);
+    painter.drawLine(x2,y2,x7,y7);
+    painter.drawLine(x2,y2,x8,y8);
+    painter.drawLine(x2,y2,x9,y9);
+    painter.drawLine(x1,y1,x3,y3);
+    painter.drawLine(x3,y3,x4,y4);
+    painter.drawLine(x3,y3,x5,y5);
+    painter.drawLine(x3,y3,x6,y6);
+    painter.drawLine(x3,y3,x7,y7);
+    painter.drawLine(x3,y3,x8,y8);
+    painter.drawLine(x3,y3,x9,y9);
+
+
 
     //questions from gateway to sensors
 
@@ -322,7 +360,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
         int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x4,y4);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -331,7 +369,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x4,y4);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -348,7 +386,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
         int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x5,y5);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -357,7 +395,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x5,y5);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -372,7 +410,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
         int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x6,y6);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -381,7 +419,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x6,y6);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -396,7 +434,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
         int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x7,y7);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -405,7 +443,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x7,y7);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -420,7 +458,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
         int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x8,y8);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -429,7 +467,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x8,y8);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -444,7 +482,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
         int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x9,y9);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -453,7 +491,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x9,y9);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -468,7 +506,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
         int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x4,y4);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -476,8 +514,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x4,y4);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -492,7 +530,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
         int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x5,y5);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -500,8 +538,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x5,y5);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -516,7 +554,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
         int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x6,y6);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -524,8 +562,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x6,y6);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -541,7 +579,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
         int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x7,y7);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -549,8 +587,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x7,y7);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -565,7 +603,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
         int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x8,y8);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -573,8 +611,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x8,y8);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -589,7 +627,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
         int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x9,y9);
         QPen linepen(Qt::red);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -597,8 +635,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x9,y9);
         painter.setPen(pointpen1);
         painter.drawPoint(p1);
         painter.setPen(pointpen2);
@@ -615,7 +653,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
         int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x4,y4);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -624,7 +662,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x4,y4);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -639,7 +677,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
         int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x5,y5);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -648,7 +686,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x5,y5);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -663,7 +701,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
         int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x6,y6);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -672,7 +710,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x6,y6);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -687,7 +725,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
         int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x7,y7);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -696,7 +734,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x7,y7);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -711,7 +749,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
         int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x8,y8);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -720,7 +758,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x8,y8);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -735,7 +773,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
         int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x9,y9);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -744,7 +782,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         linepen.setWidth(4);
         painter.setPen(linepen);
         painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x2,y2,x9,y9);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -759,7 +797,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
         int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x4,y4);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -767,8 +805,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x4,y4);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -783,7 +821,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
         int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x5,y5);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -791,8 +829,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x5,y5);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -807,7 +845,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
         int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x6,y6);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -815,8 +853,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x6,y6);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -831,7 +869,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
         int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x7,y7);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -839,8 +877,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x7,y7);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -855,7 +893,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
         int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x8,y8);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -863,8 +901,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x8,y8);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -880,7 +918,7 @@ void MainWindow::paintEvent(QPaintEvent *e){
         int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
         int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
-        QPoint p2(x3,y3);
+        QPoint p2(x9,y9);
         QPen linepen(Qt::blue);
         QPen pointpen1(Qt::green);
         QPen pointpen2(Qt::yellow);
@@ -888,8 +926,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         pointpen1.setWidth(6);
         linepen.setWidth(4);
         painter.setPen(linepen);
-        painter.drawLine(x1,y1,x2,y2);
-        painter.drawLine(x2,y2,x3,y3);
+        painter.drawLine(x1,y1,x3,y3);
+        painter.drawLine(x3,y3,x9,y9);
         painter.setPen(pointpen2);
         painter.drawPoint(p1);
         painter.setPen(pointpen1);
@@ -899,3 +937,6 @@ void MainWindow::paintEvent(QPaintEvent *e){
 
 
 }
+
+
+
