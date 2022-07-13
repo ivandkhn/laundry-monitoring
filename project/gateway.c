@@ -46,6 +46,17 @@ static void unicast_recv(struct unicast_conn *c, const linkaddr_t *from) {
     }
 }
 
+/**
+ * Callback for unicast transmission completion. If the last transmission was
+ * unsuccessful, we mark the midpoint in the network (i.e. the edge address)
+ * as invalid, so that we will not be sending via this node anymore – until
+ * we receive a new EDGE_ANNOUNCE.
+ *
+ * @param c Current unicast connection.
+ * @param status Result code of transmission – non-zero code means
+ * the message was NOT successfully transmitted.
+ * @param num_tx Number of executed re-transmissions.
+ */
 static void unicast_sent(struct unicast_conn *ptr, int status, int num_tx) {
     const linkaddr_t* addr = packetbuf_addr(PACKETBUF_ADDR_RECEIVER);
     printf("Send done to %d.%d: status %d, num_tx %i\n", addr->u8[0], addr->u8[1], status, num_tx);

@@ -19,6 +19,12 @@
 #include "net/rime/rime.h"
 #include "packet.h"
 
+/**
+ * Pretty-print the packet into serial line.
+ *
+ * @param prefix Arbitrary string to print before the packet contents.
+ * @param packet The packet itself.
+ */
 void printPacket(char *prefix, packet_t packet) {
     printf("%s ", prefix);
     printf("packet: {\n");
@@ -53,6 +59,14 @@ void printPacket(char *prefix, packet_t packet) {
     printf("}\n");
 }
 
+/**
+ * Custom wrapper for issuing unicast messages.
+ *
+ * @param prefix Arbitrary string to print before the packet contents.
+ * @param txPacket The packet for transmission.
+ * @param u Current unicast connection.
+ * @param dst Destination address.
+ */
 void sendUnicast(char *prefix, packet_t *txPacket, struct unicast_conn *u, linkaddr_t dst) {
     packetbuf_copyfrom(txPacket, sizeof((*txPacket)));
     printPacket(prefix, (*txPacket));
