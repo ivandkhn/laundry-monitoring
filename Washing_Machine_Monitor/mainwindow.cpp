@@ -80,6 +80,8 @@ void MainWindow::receive()
          str.append(ch);
     }
      ui->textEdit->append(str);
+
+     //checking if the packet status is a question and updating the topology according to it
      if(str.contains("Q_STATUS")){
          static QString machine_number;
          static QString edge_mote_number;
@@ -140,6 +142,7 @@ void MainWindow::receive()
 
      }
 
+     //checking if the packet is an answer and updating the topology and machine statuses accordingly
      if (str.contains("A_STATUS")){
          static QString machine_number;
          static QString edge_mote_number;
@@ -313,22 +316,32 @@ void MainWindow::paintEvent(QPaintEvent *e){
 //green is the starting point and yellow the ending point
     QPainter painter(this);
     //painting the whole topology
+
+    //(x,y) coordinates of gateway
     int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
     int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
+    //(x,y) coordinates of edge 1
     int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
     int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
+    //(x,y) coordinates of edge 2
     int x3 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
     int y3 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
+    //(x,y) coordinates of sensor 1
     int x4 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
     int y4 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
+    //(x,y) coordinates of sensor 2
     int x5 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
     int y5 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
+    //(x,y) coordinates of sensor 3
     int x6 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
     int y6 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
+    //(x,y) coordinates of sensor 4
     int x7 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
     int y7 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
+    //(x,y) coordinates of sensor 5
     int x8 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
     int y8 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
+    //(x,y) coordinates of sensor 5
     int x9 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
     int y9 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
     QPen linepen(Qt::black);
@@ -352,13 +365,9 @@ void MainWindow::paintEvent(QPaintEvent *e){
 
     //questions from gateway to sensors
 
+
+    //painting path from gateway to edge 1 to sensor 1
     if (testFlag == 0){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
-        int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x4,y4);
         QPen linepen(Qt::red);
@@ -377,14 +386,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
 
     }
 
-
+    //painting path from gateway to edge 1 to sensor 2
     else if (testFlag == 1){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
-        int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x5,y5);
         QPen linepen(Qt::red);
@@ -402,13 +405,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 1 to sensor 3
     else if (testFlag == 2){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
-        int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x6,y6);
         QPen linepen(Qt::red);
@@ -426,13 +424,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 1 to sensor 4
     else if (testFlag == 3){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
-        int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x7,y7);
         QPen linepen(Qt::red);
@@ -450,13 +443,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 1 to sensor 5
     else if (testFlag == 4){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
-        int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x8,y8);
         QPen linepen(Qt::red);
@@ -474,13 +462,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 1 to sensor 6
     else if (testFlag == 5){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
-        int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x9,y9);
         QPen linepen(Qt::red);
@@ -498,13 +481,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 2 to sensor 1
     else if (testFlag == 6){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
-        int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x4,y4);
         QPen linepen(Qt::red);
@@ -522,13 +500,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 2 to sensor 2
     else if (testFlag == 7){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
-        int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x5,y5);
         QPen linepen(Qt::red);
@@ -546,13 +519,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 2 to sensor 3
     else if (testFlag == 8){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
-        int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x6,y6);
         QPen linepen(Qt::red);
@@ -571,13 +539,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
 
     }
 
+    //painting path from gateway to edge 2 to sensor 4
     else if (testFlag == 9){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
-        int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x7,y7);
         QPen linepen(Qt::red);
@@ -595,13 +558,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 2 to sensor 5
     else if (testFlag == 10){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
-        int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x8,y8);
         QPen linepen(Qt::red);
@@ -619,13 +577,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from gateway to edge 2 to sensor 6
     else if (testFlag == 11){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
-        int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x9,y9);
         QPen linepen(Qt::red);
@@ -645,13 +598,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
 
     //answers from sensor to gateway
 
+    //painting path from sensor 1 to edge 1 to gateway
     else if (testFlag == 12){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
-        int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x4,y4);
         QPen linepen(Qt::blue);
@@ -669,13 +617,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 2 to edge 1 to gateway
     else if (testFlag == 13){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
-        int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x5,y5);
         QPen linepen(Qt::blue);
@@ -693,13 +636,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 3 to edge 1 to gateway
     else if (testFlag == 14){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
-        int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x6,y6);
         QPen linepen(Qt::blue);
@@ -717,13 +655,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 4 to edge 1 to gateway
     else if (testFlag == 15){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
-        int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x7,y7);
         QPen linepen(Qt::blue);
@@ -741,13 +674,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 5 to edge 1 to gateway
     else if (testFlag == 16){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
-        int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x8,y8);
         QPen linepen(Qt::blue);
@@ -765,13 +693,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 6 to edge 1 to gateway
     else if (testFlag == 17){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node->x() + ui->edge_node->width()/2;
-        int y2 = ui->edge_node->y() + ui->edge_node->height()/2;
-        int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
-        int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x9,y9);
         QPen linepen(Qt::blue);
@@ -789,13 +712,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 1 to edge 2 to gateway
     else if (testFlag == 18){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_1->x() + ui->sensor_node_1->width()/2;
-        int y3 = ui->sensor_node_1->y() + ui->sensor_node_1->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x4,y4);
         QPen linepen(Qt::blue);
@@ -813,13 +731,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 2 to edge 2 to gateway
     else if (testFlag == 19){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_2->x() + ui->sensor_node_2->width()/2;
-        int y3 = ui->sensor_node_2->y() + ui->sensor_node_2->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x5,y5);
         QPen linepen(Qt::blue);
@@ -837,13 +750,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 3 to edge 2 to gateway
     else if (testFlag == 20){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_3->x() + ui->sensor_node_3->width()/2;
-        int y3 = ui->sensor_node_3->y() + ui->sensor_node_3->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x6,y6);
         QPen linepen(Qt::blue);
@@ -861,13 +769,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //paiting path from sensor 4 to edge 2 to gateway
     else if (testFlag == 21){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_4->x() + ui->sensor_node_4->width()/2;
-        int y3 = ui->sensor_node_4->y() + ui->sensor_node_4->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x7,y7);
         QPen linepen(Qt::blue);
@@ -885,13 +788,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
+    //painting path from sensor 5 to edge 2 to gateway
     else if (testFlag == 22){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_5->x() + ui->sensor_node_5->width()/2;
-        int y3 = ui->sensor_node_5->y() + ui->sensor_node_5->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x8,y8);
         QPen linepen(Qt::blue);
@@ -909,14 +807,8 @@ void MainWindow::paintEvent(QPaintEvent *e){
         painter.drawPoint(p2);
     }
 
-
+    //painting path from sensor 6 to edge 2 to gateway
     else if (testFlag == 23){
-        int x1 = ui->gateway_node->x() + ui->gateway_node->width()/2;
-        int y1 = ui->gateway_node->y() + ui->gateway_node->height()/2;
-        int x2 = ui->edge_node_2->x() + ui->edge_node_2->width()/2;
-        int y2 = ui->edge_node_2->y() + ui->edge_node_2->height()/2;
-        int x3 = ui->sensor_node_6->x() + ui->sensor_node_6->width()/2;
-        int y3 = ui->sensor_node_6->y() + ui->sensor_node_6->height()/2;
         QPoint p1(x1,y1);
         QPoint p2(x9,y9);
         QPen linepen(Qt::blue);
